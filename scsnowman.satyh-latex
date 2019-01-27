@@ -1,0 +1,138 @@
+% scsnowman package(version 1.2d)
+% (c) 2018 Naoki Kaneko
+
+@require: list
+@require: latex-base
+
+let () = latex-packages-list <- List.append [`\usepackage{tikz}`; `\usepackage{scsnowman}`] !latex-packages-list
+
+module Scsnowman : sig
+
+  direct \scsnowman : [string list] inline-cmd
+  direct \scsnowmandefault : [string list] inline-cmd
+  direct \usescsnowmanlibrary : [string list] inline-cmd
+  direct \makeitemsnowman : [] inline-cmd
+  direct \makeqedsnowman : [] inline-cmd
+  direct \scsnowmannumeral : [int] inline-cmd
+  val adjustbaseline : bool -> string
+  val scale : float -> string
+  val body : string -> string
+  val eyes : string -> string
+  val mouth : string -> string
+  val nose : string -> string
+  val sweat : string -> string
+  val arms : string -> string
+  val hat : string -> string
+  val muffler : string -> string
+  val buttons : string -> string
+  val snow : string -> string
+  val note : string -> string
+  val broom : string -> string
+  val mikan : string -> string
+  val leaf : string -> string
+  val shape : string -> string
+  val mouthshape : string -> string
+
+end = struct
+
+let-inline tinfo \scsnowman designopt =
+  let designs-list = List.fold-left ( ^ ) ` ` (designopt |> List.map(fun st -> st ^ `,`))
+  in
+  `\scsnowman[` ^ designs-list ^ `]`
+
+
+let-inline tinfo \scsnowmandefault designopt =
+  let designs-list = List.fold-left ( ^ ) ` ` (designopt |> List.map(fun st -> st ^ `,`))
+  in
+  `\scsnowmandefault{` ^ designs-list ^ `}`
+
+
+let-inline tinfo \usescsnowmanlibrary designopt =
+  let designs-list = List.fold-left ( ^ ) ` ` (designopt |> List.map(fun st -> st ^ `,`))
+  in
+  `\usescsnowmanlibrary{` ^ designs-list ^ `}`
+
+
+  let-inline tinfo \makeitemsnowman =
+    `\makeitemsnowman`
+
+
+  let-inline tinfo \makeqedsnowman =
+    `\makeqedsnowman`
+
+
+  let-inline tinfo \scsnowmannumeral int =
+    `\scsnowmannumeral{` ^ arabic int ^ `}`
+
+
+let adjustbaseline bool =
+  if bool then `adjustbaseline`
+  else ` `
+
+let scale sc =
+  `scale=` ^ show-float sc
+
+  let body bd =
+    `body=` ^ bd
+
+
+  let eyes ee =
+    `eyes=` ^ ee
+
+
+  let mouth mu =
+    `mouth=` ^ mu
+
+
+  let nose ns =
+    `nose=` ^ ns
+
+
+  let sweat se =
+    `sweat=` ^ se
+
+
+  let arms am =
+    `arms=` ^ am
+
+
+  let hat ht =
+    `hat=` ^ ht
+
+
+  let muffler mf =
+    `muffler=` ^ mf
+
+
+  let buttons bt =
+    `buttons=` ^ bt
+
+
+  let snow so =
+    `snow=` ^ so
+
+
+  let note nt =
+    `note=` ^ nt
+
+
+  let broom bo =
+    `broom=` ^ bo
+
+
+  let mikan mk =
+    `mikan` ^ mk
+
+
+  let leaf la =
+    `leaf` ^ la
+
+
+  let shape sa =
+    `shape=` ^ sa
+
+
+  let mouthshape musa =
+    `mouthshape` ^ musa
+
+end
