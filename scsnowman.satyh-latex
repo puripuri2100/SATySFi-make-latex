@@ -133,6 +133,6 @@ let scale sc =
 
 
   let mouthshape musa =
-    `mouthshape` ^ musa
+    `mouthshape=` ^ musa
 
 end
