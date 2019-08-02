@@ -1,0 +1,119 @@
+@require: list
+@require: option
+@require: latex-base
+
+module SmallJsarticle : sig
+
+  val document : 'a -> block-text -> string
+    constraint 'a :: (|
+      title : inline-text;
+      author : inline-text;
+      date : inline-text;
+      show-toc : bool;
+      show-title : bool;
+      latex : latex-type;
+      dviware : dviware-type;
+      options : string list;
+      preamble : string list;
+    |)
+
+
+  direct +section : [inline-text; block-text] block-cmd
+  direct +p : [inline-text] block-cmd
+  direct +pn : [inline-text] block-cmd
+  direct \line-break : [] inline-cmd
+  direct \footnote : [inline-text] inline-cmd
+
+end = struct
+
+let concat = List.fold-left (^) ` `
+
+let document r bt =
+
+  let latex = r#latex in
+  let dviware = r# dviware in
+
+
+  let tinfo = get-initial-text-info () in
+
+  let options =
+    let bbs =
+      r#options |> List.map(fun st -> st ^ `,`)
+    in
+  List.fold-left ( ^ ) ` ` bbs
+  in
+
+  let preambles = List.fold-left ( ^ ) ` ` r#preamble in
+
+  let packages =
+    let tuple = (latex, dviware)
+    in
+    let bbs =
+      !latex-packages-list |> List.map (fun f -> f tuple) |> List.map (fun st -> st ^ (break tinfo))
+    in
+  List.fold-left ( ^ ) ` ` bbs
+  in
+
+  let maketitle = if r#show-title then `\maketitle` ^ (break tinfo)
+    else ` `
+  in
+
+  let toc = if r#show-toc then `\tableofcontents` ^ (break tinfo)
+    else ` `
+  in
+
+  concat[
+    `\RequirePackage{plautopatch}` ^ (break tinfo);
+    `\documentclass[` ^ options ^ `]{jsarticle}` ^ (break tinfo);
+
+      packages ^ (break tinfo);
+
+      preambles ^ (break tinfo);
+
+      `\title{` ^ stringify-inline tinfo r#title ^ `}` ^ (break tinfo);
+      `\author{` ^ stringify-inline tinfo r#author ^ `}` ^ (break tinfo);
+      `\date{` ^ stringify-inline tinfo r#date ^ `}` ^ (break tinfo);
+
+    `\begin{document}` ^ (break tinfo);
+
+      maketitle;
+      toc;
+
+      stringify-block tinfo bt ^ (break tinfo);
+
+    `\end{document}` ^ (break tinfo);
+  ]
+
+
+
+let-block tinfo +section title main =
+  let s-title = `\section{` ^ stringify-inline tinfo title ^ `}` in
+  let s-main = stringify-block tinfo main in
+    (break tinfo) ^ s-title ^ (break tinfo) ^ s-main
+
+let-block tinfo +p it =
+  concat[
+    (break tinfo);
+    stringify-inline tinfo it;
+    `\par`;
+    (break tinfo);
+  ]
+
+let-block tinfo +pn it =
+  concat [
+    (break tinfo);
+    `\noindent `#;
+    stringify-inline tinfo it;
+    `\par`;
+    (break tinfo);
+  ]
+
+let-inline tinfo \line-break = `\\ `#
+
+let-inline tinfo \footnote it =
+  let s = stringify-inline tinfo it in
+    `\footnote{` ^ s ^ `}`
+
+end
+
+let document = SmallJsarticle.document

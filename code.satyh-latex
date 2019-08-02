@@ -1,0 +1,55 @@
+@require: latex-base
+@require: list
+
+
+
+module Code :sig
+
+  val add-code-preamble : ((latex-type * dviware-type) -> string) list
+
+
+  direct +code : [string] block-cmd
+
+end = struct
+
+  let add-code-preamble =
+    let listings (_, _) =
+      `\usepackage{listings}`
+    in
+      [
+        listings
+      ]
+
+
+let concat lst = List.fold-left (^) ` ` lst
+
+let-rec make-space i =
+  if i == 0 then
+    ` `
+  else
+    #` `# ^ make-space (i - 1)
+
+
+let makecode (i, s) =
+  let space = make-space i in
+    space ^ s
+
+let scheme tinfo code =
+  let lstraw = split-into-lines code in
+  let lst = List.map makecode lstraw |> List.fold-left (fun s1 s2 -> s1 ^ break tinfo ^ s2) ` ` in
+    concat [
+      `\begin{lstlisting}`;
+      lst;
+      break tinfo;
+      `\end{lstlisting}`;
+    ]
+
+let-block tinfo +code code =
+  scheme tinfo code
+
+
+end
+
+let () = latex-packages-list <- (
+    List.append Code.add-code-preamble !latex-packages-list
+  )

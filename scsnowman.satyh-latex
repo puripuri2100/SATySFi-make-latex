@@ -1,12 +1,14 @@
-% scsnowman package(version 1.2d)
+% scsnowman package(version 0.2)
 % (c) 2018 Naoki Kaneko
 
 @require: list
 @require: latex-base
 
-let () = latex-packages-list <- List.append [`\usepackage{tikz}`; `\usepackage{scsnowman}`] !latex-packages-list
+
 
 module Scsnowman : sig
+
+  val add-scsnowman-preamble : ((latex-type * dviware-type) -> string) list
 
   direct \scsnowman : [string list] inline-cmd
   direct \scsnowmandefault : [string list] inline-cmd
@@ -34,6 +36,21 @@ module Scsnowman : sig
   val mouthshape : string -> string
 
 end = struct
+
+open LaTeXBase
+
+  let add-scsnowman-preamble =
+    let tikz (latex, dvi) =
+      `\usepackage{tikz}`
+    in
+    let scsnowman (latex, dvi) =
+      `\usepackage{scsnowman}`
+    in
+      [
+        tikz;
+        scsnowman;
+      ]
+
 
 let-inline tinfo \scsnowman designopt =
   let designs-list = List.fold-left ( ^ ) ` ` (designopt |> List.map(fun st -> st ^ `,`))
@@ -136,3 +153,5 @@ let scale sc =
     `mouthshape=` ^ musa
 
 end
+
+let () = latex-packages-list <- List.append Scsnowman.add-scsnowman-preamble !latex-packages-list

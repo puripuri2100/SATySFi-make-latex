@@ -1,0 +1,44 @@
+@require: list
+@require: latex-base
+
+
+
+module BxTeXLogo : sig
+
+  val add-bxtexlogo-preamble : ((latex-type * dviware-type) -> string) list
+
+
+  direct \SATySFi : [] inline-cmd
+  direct \LaTeX : [] inline-cmd
+  direct \LuaLaTeX : [] inline-cmd
+  direct \pLaTeX : [] inline-cmd
+
+end = struct
+
+
+  let add-texlogo-preamble =
+    let bxtexlogo (latex, dvi) =
+      `\usepackage{bxtexlogo}`
+    in
+    let bxtexlogoimport (latex, dvi) =
+      `\bxtexlogoimport{*,**}`
+    in
+      [
+        bxtexlogo;
+        bxtexlogoimport
+      ]
+
+
+  let-inline tinfo \SATySFi = `\SATySFi `#
+
+  let-inline tinfo \LaTeX = `\LaTeX `#
+
+  let-inline tinfo \LuaLaTeX = `\LuaLaTeX `#
+
+  let-inline tinfo \pLaTeX = `\pLaTeX `#
+
+end
+
+let () = latex-packages-list <- (
+    List.append BxTeXLogo.add-bxtexlogo-preamble !latex-packages-list
+  )

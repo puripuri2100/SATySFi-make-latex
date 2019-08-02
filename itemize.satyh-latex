@@ -1,0 +1,55 @@
+@require: list
+@require: latex-base
+
+module Itemize : sig
+
+  val listing-item : string -> text-info -> int -> itemize list -> string
+  direct +listing : [itemize] block-cmd
+  direct \listing : [itemize] inline-cmd
+  direct +enumerate : [itemize] block-cmd
+  direct \enumerate : [itemize] inline-cmd
+
+end = struct
+
+
+
+
+let-rec listing-item tag tinfo depth lst =
+    match lst with
+    | []                       -> ` `
+    | (Item(it, [])) :: tail   ->
+      (
+        let tail-str = listing-item tag tinfo (depth) tail in
+          HTMLBase.tag tinfo `li` (fun tinfo -> stringify-inline tinfo it) ^ break tinfo ^ tail-str
+      )
+    | (Item(it, chld)) :: tail ->
+      (
+        let tail-str = listing-item tag tinfo (depth) tail in
+          HTMLBase.tag tinfo `li` (fun tinfo ->
+            stringify-inline tinfo it ^ break tinfo ^ HTMLBase.tag tinfo tag (fun tinfo ->
+              listing-item tag tinfo (depth + 1) chld
+            )
+          ) ^ break tinfo ^ tail-str
+      )
+
+
+let listing tinfo (Item(_, itmzlst)) =
+  let stlst tinfo = listing-item `ul` tinfo 0 itmzlst in
+    HTMLBase.tag tinfo `ul` (fun tinfo -> stlst tinfo)
+
+
+let-block tinfo +listing item = listing tinfo item
+
+let-inline tinfo \listing item = listing tinfo item
+
+
+let enumerate tinfo (Item(_, itmzlst)) =
+  let stlst tinfo = listing-item `ol` tinfo 0 itmzlst in
+    HTMLBase.tag tinfo `ol` (fun tinfo -> stlst tinfo)
+
+
+let-block tinfo +enumerate item = enumerate tinfo item
+
+let-inline tinfo \enumerate item = enumerate tinfo item
+
+end

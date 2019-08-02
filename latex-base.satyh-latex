@@ -1,0 +1,93 @@
+@require: option
+@require: list
+
+let-mutable latex-packages-list <- []
+
+
+  type latex-type =
+    | PDFLaTeX
+    | LuaLaTeX
+    | XeLaTeX
+    | UPLaTeX
+    | PLaTeX
+
+  type dviware-type =
+    | DVIPDFMX
+    | DVIPS
+    | XDVIPDFMX
+
+
+module LaTeXBase : sig
+
+%  type latex-type
+%  type dviware-type
+
+  val pdflatex : latex-type
+  val xelatex : latex-type
+  val lualatex : latex-type
+  val platex : latex-type
+  val uplatex : latex-type
+
+  val dvipdfmx : dviware-type
+  val dvips : dviware-type
+  val xdvipdfmx : dviware-type
+
+
+
+  val environment : string list?-> int?-> text-info -> string -> (text-info -> string) -> string 
+
+end = struct
+
+%  type latex-type =
+%    | PDFLaTeX
+%    | LuaLaTeX
+%    | XeLaTeX
+%    | UPLaTeX
+%    | PLaTeX
+%
+%  type dviware-type =
+%    | DVIPDFMX
+%    | DVIPS
+%    | XDVIPDFMX
+
+
+  let pdflatex = PDFLaTeX
+  let xelatex = XeLaTeX
+  let lualatex = LuaLaTeX
+  let platex = PLaTeX
+  let uplatex = UPLaTeX
+
+  let dvipdfmx = DVIPDFMX
+  let dvips = DVIPS
+  let xdvipdfmx = XDVIPDFMX
+
+  let make-option opt =
+    let f i s1 s2 =
+      if i == 0 then
+        s1 ^ s2
+      else
+        s1 ^ `,` ^ s2
+    in
+    List.fold-lefti f ` ` opt
+
+  let environment ?:option-opt ?:indent-opt tinfo s sf =
+    let opt = Option.from [] option-opt in
+    let s-opt =
+      match opt with
+      | [] -> ` `
+      | _ -> `[` ^ make-option opt ^ `]`
+    in
+    let indent = Option.from 2 indent-opt in
+    let tinfo-inner = tinfo |> deepen-indent indent in
+      `\begin{` ^ s ^ `}` ^ s-opt
+        ^ sf tinfo-inner ^ `\end{` ^ s ^ `}`
+
+
+  let dviware dvi =
+    match dvi with
+    | DVIPDFMX -> `dvipdfmx`
+    | DVIPS -> `dvips`
+    | XDVIPDFMX -> `xdvipdfmx`
+
+
+end

@@ -1,0 +1,110 @@
+@require: list
+@require: latex-base
+
+
+module Geometry : sig
+
+  val add-geometry-preamble : ((latex-type * dviware-type) -> string) list
+
+
+  val pageset : string list -> string
+  val papersize : length -> length -> string
+  val a0paper : string
+  val a1paper : string
+  val a2paper : string
+  val a3paper : string
+  val a4paper : string
+  val a5paper : string
+  val a6paper : string
+  val b0paper : string
+  val b1paper : string
+  val b2paper : string
+  val b3paper : string
+  val b4paper : string
+  val b5paper : string
+  val b6paper : string
+  val c0paper : string
+  val c1paper : string
+  val c2paper : string
+  val c3paper : string
+  val c4paper : string
+  val c5paper : string
+  val c6paper : string
+  val b0j : string
+  val b1j : string
+  val b2j : string
+  val b3j : string
+  val b4j : string
+  val b5j : string
+  val b6j : string
+  val ansiapaper : string
+  val ansibpaper : string
+  val ansicpaper : string
+  val ansidpaper : string
+  val ansiepaper : string
+  val letterpaper : string
+  val executivepaper : string
+  val legalpaper : string
+
+end = struct
+
+  let add-geometry-preamble =
+    let geometry (_, _) =
+      `\usepackage{geometry}`
+    in
+      [
+        geometry
+      ]
+
+
+  let pageset stlist =
+    let options-list =
+      List.fold-left ( ^ ) ` ` (stlist |> List.map(fun st -> st ^ `,`))
+    in
+  `\geometry{` ^ options-list ^ `}`
+
+  let papersize width heigth = `papersize={` ^ show-float(width /' 1mm) ^ `mm` ^
+    `,` ^ show-float(heigth /' 1mm) ^ `mm` ^ `}`
+
+  let a0paper = `a0paper`
+  let a1paper = `a1paper`
+  let a2paper = `a2paper`
+  let a3paper = `a3paper`
+  let a4paper = `a4paper`
+  let a5paper = `a5paper`
+  let a6paper = `a6paper`
+  let b0paper = `b0paper`
+  let b1paper = `b1paper`
+  let b2paper = `b2paper`
+  let b3paper = `b3paper`
+  let b4paper = `b4paper`
+  let b5paper = `b5paper`
+  let b6paper = `b6paper`
+  let c0paper = `c0paper`
+  let c1paper = `c1paper`
+  let c2paper = `c2paper`
+  let c3paper = `c3paper`
+  let c4paper = `c4paper`
+  let c5paper = `c5paper`
+  let c6paper = `c6paper`
+  let b0j = `b0j`
+  let b1j = `b1j`
+  let b2j = `b2j`
+  let b3j = `b3j`
+  let b4j = `b4j`
+  let b5j = `b5j`
+  let b6j = `b6j`
+  let ansiapaper = `ansiapaper`
+  let ansibpaper = `ansibpaper`
+  let ansicpaper = `ansicpaper`
+  let ansidpaper = `ansidpaper`
+  let ansiepaper = `ansiepaper`
+  let letterpaper = `letterpaper`
+  let executivepaper = `executivepaper`
+  let legalpaper = `legalpaper`
+
+end
+
+let () = latex-packages-list <- (
+    List.append Geometry.add-geometry-preamble !latex-packages-list
+  )
