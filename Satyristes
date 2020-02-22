@@ -11,7 +11,7 @@
      (package "geometry.satyh-latex" "./geometry.satyh-latex")
      (package "bxtexlogo.satyh-latex" "./bxtexlogo.satyh-latex")
      (package "scsnowman.satyh-latex" "./scsnowman.satyh-latex")
-     (package "small-jsarticle.satyh-latex" "./small-jsarticle.satyh-latex")
+     (package "small-jsarticle.satyh-jsarticle" "./small-jsarticle.satyh-jsarticle")
     )
   )
   (opam "satysfi-make-latex.opam")

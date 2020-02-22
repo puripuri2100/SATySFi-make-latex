@@ -1,6 +1,6 @@
-@require: small-jsarticle
-@require: scsnowman
-@require: geometry
+@require: make-latex/small-jsarticle
+@require: make-latex/scsnowman
+@require: make-latex/geometry
 
 @import: local
 
