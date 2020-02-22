@@ -1,6 +1,6 @@
-@import: small-jsarticle
-@import: scsnowman
-@import: geometry
+@require: small-jsarticle
+@require: scsnowman
+@require: geometry
 
 @import: local
 

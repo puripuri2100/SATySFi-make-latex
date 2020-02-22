@@ -1,5 +1,4 @@
-all:
-	cp latex-base.satyh-latex ~/.satysfi/local/packages
-	satysfi --text-mode "jsarticle,latex" js-test.saty -o js-test.tex
-#	ptex2pdf -l -u js-test.tex
-	 cluttex -e uplatex js-test
+test:
+	satysfi --text-mode "jsarticle,latex" test/js-test.saty -o test/js-test.tex
+	ptex2pdf -l -u test/js-test.tex -o test/js-test.pdf
+#	 cluttex -e uplatex js-test
