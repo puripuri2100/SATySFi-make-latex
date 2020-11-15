@@ -5,15 +5,7 @@
   (name "make-latex")
   (version "0.1.0")
   (sources
-    (
-     (package "latex-base.satyh-latex" "./latex-base.satyh-latex")
-     (package "code.satyh-latex" "./code.satyh-latex")
-     (package "geometry.satyh-latex" "./geometry.satyh-latex")
-     (package "bxtexlogo.satyh-latex" "./bxtexlogo.satyh-latex")
-     (package "scsnowman.satyh-latex" "./scsnowman.satyh-latex")
-     (package "small-jsarticle.satyh-jsarticle" "./small-jsarticle.satyh-jsarticle")
-    )
-  )
+    ((packageDir "src")))
   (opam "satysfi-make-latex.opam")
   (dependencies ())
   (compatibility ((satyrographos "0.0.1"))))

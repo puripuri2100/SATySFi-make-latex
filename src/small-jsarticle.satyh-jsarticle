@@ -1,6 +1,6 @@
 @require: list
 @require: option
-@require: latex-base
+@import: latex-base
 
 module SmallJsarticle : sig
 

@@ -2,13 +2,13 @@
 % (c) 2018 Naoki Kaneko
 
 @require: list
-@require: latex-base
+@import: latex-base
 
 
 
 module Scsnowman : sig
 
-  val add-scsnowman-preamble : ((latex-type * dviware-type) -> string) list
+  val add-scsnowman-preamble : ((latex-type * dviware-type option) -> string) list
 
   direct \scsnowman : [string list] inline-cmd
   direct \scsnowmandefault : [string list] inline-cmd
@@ -40,10 +40,16 @@ end = struct
 open LaTeXBase
 
   let add-scsnowman-preamble =
-    let tikz (latex, dvi) =
-      `\usepackage{tikz}`
+    let tikz (latex, dvi-opt) =
+      let dviware-type-opt = LaTeXBase.get-dviwaret-opt latex dviware-opt
+      in
+      match dviware-type-opt
+      | None -> `\usepackage{tikz}`
+      | Some(DVIPDFMX) -> `\usepackage[dvipdfmx]{tikz}`
+      | Some(DVIPS) -> `\usepackage[dvips]{tikz}`
+      | Some(XDVIPDFMX) -> `\usepackage{tikz}`
     in
-    let scsnowman (latex, dvi) =
+    let scsnowman (latex, dvi-opt) =
       `\usepackage{scsnowman}`
     in
       [
@@ -154,4 +160,4 @@ let scale sc =
 
 end
 
-let () = latex-packages-list <- List.append Scsnowman.add-scsnowman-preamble !latex-packages-list
+let () = LaTeXBase.add-latex-packages-list Scsnowman.add-scsnowman-preamble

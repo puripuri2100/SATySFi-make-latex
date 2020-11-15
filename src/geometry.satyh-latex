@@ -4,7 +4,7 @@
 
 module Geometry : sig
 
-  val add-geometry-preamble : ((latex-type * dviware-type) -> string) list
+  val add-geometry-preamble : ((latex-type * dviware-type option) -> string) list
 
 
   val pageset : string list -> string
@@ -105,6 +105,4 @@ end = struct
 
 end
 
-let () = latex-packages-list <- (
-    List.append Geometry.add-geometry-preamble !latex-packages-list
-  )
+let () = LaTeXBase.add-latex-packages-list Geometry.add-geometry-preamble

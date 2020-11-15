@@ -5,10 +5,11 @@
 
 module Code :sig
 
-  val add-code-preamble : ((latex-type * dviware-type) -> string) list
+  val add-code-preamble : ((latex-type * dviware-type option) -> string) list
 
 
   direct +code : [string] block-cmd
+  direct \code : [string] inline-cmd
 
 end = struct
 
@@ -48,8 +49,10 @@ let-block tinfo +code code =
   scheme tinfo code
 
 
+let-inline tinfo \code code =
+  `\lstinline{`^code^`}`
+
+
 end
 
-let () = latex-packages-list <- (
-    List.append Code.add-code-preamble !latex-packages-list
-  )
+let () = LaTeXBase.add-latex-packages-list Code.add-code-preamble

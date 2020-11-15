@@ -5,7 +5,7 @@
 
 module BxTeXLogo : sig
 
-  val add-bxtexlogo-preamble : ((latex-type * dviware-type) -> string) list
+  val add-bxtexlogo-preamble : ((latex-type * dviware-type option) -> string) list
 
 
   direct \SATySFi : [] inline-cmd
@@ -39,6 +39,4 @@ end = struct
 
 end
 
-let () = latex-packages-list <- (
-    List.append BxTeXLogo.add-bxtexlogo-preamble !latex-packages-list
-  )
+let () = LaTeXBase.add-latex-packages-list BxTeXLogo.add-bxtexlogo-preamble

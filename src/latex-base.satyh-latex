@@ -1,7 +1,6 @@
 @require: option
 @require: list
 
-let-mutable latex-packages-list <- []
 
 
   type latex-type =
@@ -31,6 +30,12 @@ module LaTeXBase : sig
   val dvipdfmx : dviware-type
   val dvips : dviware-type
   val xdvipdfmx : dviware-type
+
+
+  val add-latex-packages-list : (((latex-type * dviware-type option) -> string) list) -> unit
+  val get-latex-packages-list : latex-type -> dviware-type option -> string list
+
+  val get-dviwaret-opt : latex-type -> dviware-type option -> dviware-type option
 
 
 
@@ -69,6 +74,40 @@ end = struct
         s1 ^ `,` ^ s2
     in
     List.fold-lefti f ` ` opt
+
+
+
+let-mutable latex-packages-list <- []
+
+let add-latex-packages-list f =
+  latex-packages-list <- (List.append f !latex-packages-list)
+
+
+let get-latex-packages-list latex-type dviware-type-opt =
+  let (latex-type, dviware-type-opt) =
+    match (latex-type, dviware-type-opt) with
+    | (LuaLaTeX, _) -> (LuaLaTeX, None)
+    | (PDFLaTeX, _) -> (PDFLaTeX, None)
+    | (XeLaTeX, _) -> (XeLaTeX, Some(XDVIPDFMX))
+    | (PLaTeX, None) -> (PLaTeX, Some(DVIPDFMX))
+    | (PLaTeX, Some(d)) -> (PLaTeX, Some(d))
+    | (UPLaTeX, None) -> (UPLaTeX, Some(DVIPDFMX))
+    | (UPLaTeX, Some(d)) -> (UPLaTeX, Some(d))
+  in
+  let f g = g (latex-type, dviware-type-opt) in
+  List.map f !latex-packages-list
+
+
+  let get-dviwaret-opt latex-type dviware-type-opt =
+    match (latex-type, dviware-type-opt) with
+    | (LuaLaTeX, _) -> None
+    | (PDFLaTeX, _) -> None
+    | (XeLaTeX, _) -> None
+    | (PLaTeX, None) -> Some(DVIPDFMX)
+    | (PLaTeX, Some(d)) -> Some(d)
+    | (UPLaTeX, None) -> Some(DVIPDFMX)
+    | (UPLaTeX, Some(d)) -> Some(d)
+
 
   let environment ?:option-opt ?:indent-opt tinfo s sf =
     let opt = Option.from [] option-opt in

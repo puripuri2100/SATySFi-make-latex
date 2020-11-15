@@ -1,0 +1,38 @@
+@import: latex-base
+
+module URL : sig
+
+val add-url-preamble : ((latex-type * dviware-type option) -> string) list
+
+  direct \href : [string; inline-text] inline-cmd
+  direct \url : [string] inline-cmd
+
+end = struct
+
+
+let add-url-preamble =
+  let f (latex-type, dviware-type-opt) =
+    let dviware-type-opt = LaTeXBase.get-dviwaret-opt latex-type dviware-type-opt
+    in
+    match dviware-type-opt with
+    | None -> `\usepackage{hyperref}`
+    | Some(DVIPDFMX) -> `\usepackage[dvipdfmx]{hyperref}`
+    | Some(DVIPS) -> `\usepackage[dvips]{hyperref}`
+    | Some(XDVIPDFMX) -> `\usepackage{hyperref}`
+  in
+  [
+    f
+  ]
+
+
+let-inline tinfo \href url it =
+  `\href{`^url^`}{`^stringify-inline tinfo it^`}`
+
+
+let-inline \url url =
+  {\href(url)(embed-string url);}
+
+
+end
+
+let () = LaTeXBase.add-latex-packages-list URL.add-url-preamble

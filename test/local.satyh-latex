@@ -1,4 +1,4 @@
-@require: latex-base
+@require: make-latex/latex-base
 
 let-block tinfo +quotation bt =
   LaTeXBase.environment tinfo `quotation` (fun tinfo -> stringify-block tinfo bt)
