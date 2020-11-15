@@ -1,11 +1,18 @@
 ;; For Satyrographos 0.0.2 series
 (version 0.0.2)
 
+;; Library declaration
 (library
+  ;; Library name
   (name "make-latex")
-  (version "0.1.0")
+  ;; Library version
+  (version "0.2.0")
+  ;; Files
   (sources
     ((packageDir "src")))
+  ;; OPAM package file
   (opam "satysfi-make-latex.opam")
-  (dependencies ())
-  (compatibility ((satyrographos "0.0.1"))))
+  ;; Dependency
+  (dependencies
+    ((dist ())
+    )))
