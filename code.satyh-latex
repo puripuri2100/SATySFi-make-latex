@@ -1,4 +1,4 @@
-@require: latex-base
+@import: latex-base
 @require: list
 
 

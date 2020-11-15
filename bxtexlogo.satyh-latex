@@ -1,5 +1,5 @@
 @require: list
-@require: latex-base
+@import: latex-base
 
 
 
