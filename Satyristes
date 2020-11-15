@@ -16,3 +16,26 @@
   (dependencies
     ((dist ())
     )))
+
+;; Library doc declaration
+(libraryDoc
+  ;; Library doc name
+  (name "make-latex-doc")
+  ;; Library version
+  (version "0.2.0")
+  ;; Working directory to build docs
+  (workingDirectory "doc")
+  ;; Build commands
+  (build
+    ;; Run SATySFi
+    ((satysfi "manual-ja.saty" "-o" "manual-ja.pdf")))
+  ;; Files
+  (sources
+    ((doc "manual-ja.pdf" "doc/manual-ja.pdf")))
+  ;; OPAM package file
+  (opam "satysfi-make-latex-doc.opam")
+  ;; Dependency
+  (dependencies
+    ((make-latex ()) ; the main library
+     (dist ()) ; Standard library
+    )))

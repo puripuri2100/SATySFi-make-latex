@@ -1,7 +1,7 @@
 opam-version: "2.0"
 name: "satysfi-make-latex"
 version: "0.2.0"
-synopsis: "Outputting LaTeX file using SATySFi's text-mode."
+synopsis: "Outputting LaTeX file using SATySFi's text-mode"
 description: """Outputting LaTeX file using SATySFi's text-mode."""
 
 maintainer: "Naoki Kaneko <puripuri2100@gmail.com>"

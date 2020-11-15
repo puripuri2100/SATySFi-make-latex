@@ -1,0 +1,10 @@
+@require: stdjabook
+
+document (|
+  title = {make-latexライブラリ};
+  author = {\@puripuri2100};
+  show-title = true;
+  show-toc = false;
+|) '<
+  +p{このライブラリは\SATySFi;}
+>
