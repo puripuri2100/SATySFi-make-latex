@@ -1,6 +1,6 @@
-@require: make-latex/small-jsarticle
-@require: make-latex/scsnowman
-@require: make-latex/geometry
+@import: ../src/small-jsarticle
+@import: ../src/scsnowman
+@import: ../src/geometry
 
 @import: local
 
@@ -11,7 +11,7 @@ document (|
   show-title = true;
   show-toc = false;
   latex = LaTeXBase.uplatex;
-  dviware = LaTeXBase.dvipdfmx;
+  dviware-opt = Some(LaTeXBase.dvipdfmx);
   options = [`dvipdfmx`; `uplatex`];
   preamble = [Geometry.pageset [Geometry.papersize 182mm 257mm];];
 |) '<

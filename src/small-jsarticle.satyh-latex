@@ -12,7 +12,7 @@ module SmallJsarticle : sig
       show-toc : bool;
       show-title : bool;
       latex : latex-type;
-      dviware : dviware-type;
+      dviware-opt : dviware-type option;
       options : string list;
       preamble : string list;
     |)
@@ -31,7 +31,7 @@ let concat = List.fold-left (^) ` `
 let document r bt =
 
   let latex = r#latex in
-  let dviware = r# dviware in
+  let dviware-opt = r#dviware-opt in
 
 
   let tinfo = get-initial-text-info () in
@@ -46,10 +46,10 @@ let document r bt =
   let preambles = List.fold-left ( ^ ) ` ` r#preamble in
 
   let packages =
-    let tuple = (latex, dviware)
+    let tuple = (latex, dviware-opt)
     in
     let bbs =
-      !latex-packages-list |> List.map (fun f -> f tuple) |> List.map (fun st -> st ^ (break tinfo))
+      LaTeXBase.get-latex-packages-list latex dviware-opt |> List.map (fun st -> st ^ (break tinfo))
     in
   List.fold-left ( ^ ) ` ` bbs
   in

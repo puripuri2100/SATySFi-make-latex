@@ -1,4 +1,8 @@
 @require: stdjabook
+@require: code
+@require: itemize
+@require: annot
+
 
 document (|
   title = {make-latexライブラリ};
@@ -6,5 +10,166 @@ document (|
   show-title = true;
   show-toc = false;
 |) '<
-  +p{このライブラリは\SATySFi;}
+  +p{このライブラリは\SATySFi;のテキストモードを使って\LaTeX;ファイルを出力するためのパッケージをいくつか扱っているものです。}
+  +p{\SATySFi;のテキストモードでの起動時に"tex,latex"でのタグ指定が必要です。}
+
+  +section {latex-baseパッケージ}<
+    +p{\LaTeX;出力をするための基礎となる型や関数を提供するパッケージです。モジュール名は\code(`LaTeXBase`);です。}
+    +p{
+      \d-code(`
+  type latex-type =
+    | PDFLaTeX
+    | LuaLaTeX
+    | XeLaTeX
+    | UPLaTeX
+    | PLaTeX
+      `);
+    と
+      \d-code(`
+  type dviware-type =
+    | DVIPDFMX
+    | DVIPS
+    | XDVIPDFMX
+      `);
+    が型として公開されており、それぞれの値を持つ
+    \d-code(`
+pdflatex : latex-type
+xelatex : latex-type
+lualatex : latex-type
+platex : latex-type
+uplatex : latex-type
+
+dvipdfmx : dviware-type
+dvips : dviware-type
+xdvipdfmx : dviware-type
+    `);
+    がモジュール内で公開されています。
+    }
+    +p{
+      また、パッケージを作る際に出力する\LaTeX;コードが依存する\LaTeX;パッケージを登録するために必要な
+      \d-code(`add-latex-packages-list : (((latex-type * dviware-type option) -> string) list) -> unit`);
+      という関数と、クラスファイル側で中身を取得するための
+      \d-code(`get-latex-packages-list : latex-type -> dviware-type option -> string list`);
+      という関数が提供されています。
+      \code(`add-latex-packages-list`);ではエンジンとdviwareに応じて登録する\LaTeX;コードの文字列を変化させることができます。具体的には「\code(`LuaLaTeX`);等ではdviwareを登録しないが、\code(`UPLaTeX`);では登録する」というような使い方を想定しています。
+      また、「\code(`LuaLaTeX`);と\code(`DVIPDFMX`);が同時に指定される」という不正な状況を回避するために、エンジンに適切に対応したdviwareを得るための
+      \d-code(`get-dviwaret-opt : latex-type -> dviware-type option -> dviware-type option`);
+      という関数も提供しています。
+    }
+    +p{\code(`\begin{hoge}\end{hoge}`);のような文字列を生成するための
+    \d-code(`
+environment : string list?-> int?-> text-info -> string -> (text-info -> string) -> string 
+    `);
+    という関数も提供しています。それぞれ、
+    \enumerate{
+      * オプション引数の文字列
+      * インデントの深さ
+      * tinfo
+      * 環境名
+      * tinfoを受け取って環境の中に書くコードを出力する関数
+    }
+    になっています。複雑な引数の環境には対応できませんが、単純なものであればこれで簡単に作ることが出来るはずです。}
+  >
+
+  +section{クラスファイル}<
+    +p{small-jsarticleというクラスファイルがあります。pLaTeXで処理することのできるlatexファイルを出力します。}
+    +p{\code(`document`);関数は
+    \d-code(`
+document : 'a -> block-text -> string
+    constraint 'a :: (|
+      title : inline-text;
+      author : inline-text;
+      date : inline-text;
+      show-toc : bool;
+      show-title : bool;
+      latex : latex-type;
+      dviware-opt : dviware-type option;
+      options : string list;
+      preamble : string list;
+    |)
+    `);という型になっています。
+    \code(`latex`);部分への入力に関わらず\code(`(u)platex`);用のクラスファイルである\code(`jsarticle`);を使用するようにコードを出力しますので、\code(`LaTeXBase.platex`);か\code(`LaTeXBase.uplatex`);を与えることが推奨されます。
+    \code(`options`);では、クラスファイルへ与えるオプションを与えてください。\code(`dvipdfmx`);や\code(`uplatex`);などのようなものも与えるなら与えるべきです。
+    \code(`preamble`);ではプリアンブルに出力される文字列を与えて下さい。自作のパッケージを読み込ませたい場合や\code(`\pagestyle{empty}`);を入れたい場合などに使うことを想定しています。}
+  >
+
+  +section{パッケージ}<
+    +p{現在提供しているパッケージは以下の通りです。
+    \listing{
+      * bxtexlogo.satyh-latex
+      * code.satyh-latex
+      * geometry.satyh-latex
+      * scsnowman.satyh-latex
+      * url.satyh-latex
+    }}
+
+    +subsection{bxtexlogoパッケージ}<
+      +p{\TeX;関係のロゴを表示するコマンドを出力するためのコマンドを提供するパッケージです。
+      このパッケージで提供するコマンドはdirectで
+      \listing{
+        * \code(`\SATySFi : []`);
+        * \code(`\LaTeX : []`);
+        * \code(`\LuaLaTeX : []`);
+        * \code(`\pLaTeX : []`);
+      }で、読み込む\LaTeX;パッケージは\code(`bxtexlogo`);です。}
+    >
+    +subsection{codeパッケージ} <
+      +p{コードを出力するコマンドを出力するためのコマンドを提供します。
+      提供するコマンドは
+      \listing{
+        * \code(`\code : [string]`);
+        * \code(`+code : [string]`);
+      }で、読み込む\LaTeX;パッケージは\code(`listings`);です。}
+    >
+    +subsection{geometryパッケージ} <
+      +p{ページサイズを弄るためのパッケージです。読み込む\LaTeX;パッケージは\code(`geometry`);で、モジュール名は\code(`Geometry`);です。}
+      +p{\code(`pageset : string list -> string`);という関数があるので、ここにページサイズなどを表す文字列を与えると、\LaTeX;で使える設定用の文字列ができるので、これをクラスファイルの\code(`preamble`);などに与えて下さい。}
+      +p{提供関数は多いですが、大体は\code(`b5j`);など、geometryパッケージと大体共通です。}
+    >
+    +subsection{scsnowmanパッケージ} <
+      +p{雪だるまを出力するためのコマンドを出力するパッケージです。読み込む\LaTeX;パッケージは\code(`tikz`);と\code(`scsnowman`);で、モジュール名は\code(`Scsnowman`);です。}
+      +p{提供するコマンドは
+      \listing{
+        * `\scsnowman : [string list]`
+        * `\scsnowmandefault : [string list]`
+        * `\usescsnowmanlibrary : [string list]`
+        * `\makeitemsnowman : []`
+        * `\makeqedsnowman : []`
+        * `\scsnowmannumeral : [int]`
+      }です。引数には後述する設定を与えます。各コマンドの詳しい挙動についてはscsnowmanパッケージのドキュメントをお読みください。}
+      +p{提供する設定用関数は以下の通りです。
+      \listing{
+        * `adjustbaseline : bool -> string`
+        * `scale : float -> string`
+        * `body : string -> string`
+        * `eyes : string -> string`
+        * `mouth : string -> string`
+        * `nose : string -> string`
+        * `sweat : string -> string`
+        * `arms : string -> string`
+        * `hat : string -> string`
+        * `muffler : string -> string`
+        * `buttons : string -> string`
+        * `snow : string -> string`
+        * `note : string -> string`
+        * `broom : string -> string`
+        * `mikan : string -> string`
+        * `leaf : string -> string`
+        * `shape : string -> string`
+        * `mouthshape : string -> string`
+      }}
+    >
+    +subsection{urlパッケージ} <
+      +p{URLを出力する形のパッケージを提供します。読み込む\LaTeX;パッケージは`hyperref`パッケージで、モジュール名は`URL`です。}
+      +p{提供するコマンドは
+      \listing{
+        * `\href : [string; inline-text]`
+        * `\url : [string]`
+      }です。}
+    >
+  >
+  +section{ライセンスなど}<
+    +p{This software released under \href(`https://github.com/puripuri2100/SATySFi-make-latex/blob/master/LICENSE`){the MIT license}.}
+    +p{Copyright (c) 2020 Naoki Kaneko (a.k.a. "puripuri2100")}
+  >
 >

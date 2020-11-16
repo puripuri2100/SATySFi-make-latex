@@ -41,9 +41,9 @@ open LaTeXBase
 
   let add-scsnowman-preamble =
     let tikz (latex, dvi-opt) =
-      let dviware-type-opt = LaTeXBase.get-dviwaret-opt latex dviware-opt
+      let dviware-type-opt = LaTeXBase.get-dviwaret-opt latex dvi-opt
       in
-      match dviware-type-opt
+      match dviware-type-opt with
       | None -> `\usepackage{tikz}`
       | Some(DVIPDFMX) -> `\usepackage[dvipdfmx]{tikz}`
       | Some(DVIPS) -> `\usepackage[dvips]{tikz}`
