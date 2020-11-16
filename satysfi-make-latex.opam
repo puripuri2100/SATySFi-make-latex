@@ -19,7 +19,7 @@ depends: [
 build: [ ]
 install: [
   ["satyrographos" "opam" "install"
-   "--name" "make-latex"
-   "--prefix" "%{prefix}%"
-   "--script" "%{build}%/Satyristes"]
+   "-name" "make-latex"
+   "-prefix" "%{prefix}%"
+   "-script" "%{build}%/Satyristes"]
 ]
